@@ -12,6 +12,13 @@ class MalfunctionController extends Controller
         return Malfunction::all();
     }
 
+    public function getMalfunctionsByForklift($forkliftId)
+    {
+        $malfunctions = Malfunction::where('forklift_id', $forkliftId)->get();
+
+        return response()->json($malfunctions);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

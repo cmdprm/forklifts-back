@@ -12,6 +12,19 @@ class ForkliftController extends Controller
         return Forklift::all();
     }
 
+    public function search(Request $request)
+    {
+        $number = $request->query('number');
+
+        if (!$number) {
+            $forklifts = Forklift::all();
+        } else {
+            $forklifts = Forklift::where('number', 'ILIKE', "%$number%")->get();
+        }
+
+        return response()->json($forklifts, 200);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -20,18 +33,22 @@ class ForkliftController extends Controller
             'capacity' => 'required|integer',
         ]);
 
-        return Forklift::create($request->all());
+        $forklift = Forklift::create($request->all());
+
+        return response()->json($forklift, 201);
     }
 
-    public function update(Request $request, Forklift $forklift)
+    public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
+        $forklift = Forklift::findOrFail($id);
+
+        $request->validate([
             'brand' => 'required|string|max:255',
             'number' => 'required|string|max:255',
             'capacity' => 'required|integer|min:1',
         ]);
 
-        $forklift->update($validatedData);
+        $forklift->update($request->all());
 
         return response()->json($forklift, 200);
     }
