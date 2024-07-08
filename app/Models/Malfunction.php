@@ -13,17 +13,4 @@ class Malfunction extends Model
     protected $fillable = ['detected_at', 'resolved_at', 'description', 'forklift_id'];
 
     protected $dates = ['detected_at', 'resolved_at'];
-
-    public function forklift()
-    {
-        return $this->belongsTo(Forklift::class);
-    }
-
-    public function getDowntimeAttribute()
-    {
-        if ($this->resolved_at) {
-            return $this->resolved_at->diffInMinutes($this->detected_at);
-        }
-        return null;
-    }
 }

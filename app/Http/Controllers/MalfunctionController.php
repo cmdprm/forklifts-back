@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Malfunction;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class MalfunctionController extends Controller
 {
@@ -37,14 +38,11 @@ class MalfunctionController extends Controller
             'detected_at' => 'required|date',
             'resolved_at' => 'required|date',
             'description' => 'required|string',
+            'forklift_id' => 'required|exists:forklifts,id',
         ]);
 
         $malfunction->update($validatedData);
-
-        if (!is_null($malfunction->resolved_at)) {
-            $malfunction->downtime = $malfunction->resolved_at->diffInMinutes($malfunction->detected_at);
-            $malfunction->save();
-        }
+        $malfunction->save();
 
         return response()->json($malfunction, 200);
     }
